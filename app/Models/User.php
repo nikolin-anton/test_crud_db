@@ -56,4 +56,12 @@ class User extends Authenticatable
         $url = "$url/reset-password?token=$token&email=$email";
         $this->notify(new ResetPasswordNotification($url));
     }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function blogs(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(Blog::class);
+    }
 }

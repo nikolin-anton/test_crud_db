@@ -7,6 +7,7 @@ use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\Auth\ResetPasswordController;
 use App\Http\Controllers\Auth\ChangePasswordController;
+use App\Http\Controllers\BlogController;
 
 /*
 |--------------------------------------------------------------------------
@@ -20,13 +21,20 @@ use App\Http\Controllers\Auth\ChangePasswordController;
 */
 
 Route::prefix('v1')->group(function () {
-   Route::post('/registration', RegistrationController::class);
-   Route::post('/login', [LoginController::class, 'login']);
-   Route::post('/logout', [LoginController::class, 'logout']);
-   Route::post('/forgot-password', ForgotPasswordController::class);
-   Route::post('/reset-password', ResetPasswordController::class);
+    Route::post('/registration', RegistrationController::class);
+    Route::post('/login', [LoginController::class, 'login']);
+    Route::post('/logout', [LoginController::class, 'logout']);
+    Route::post('/forgot-password', ForgotPasswordController::class);
+    Route::post('/reset-password', ResetPasswordController::class);
+
+    //Blog
+    Route::get('/blogs', [BlogController::class, 'index']);
+    Route::get('/blogs/{blog}', [BlogController::class, 'show']);
 
     Route::middleware('auth:sanctum')->group(function (){
         Route::post('/change-password', ChangePasswordController::class);
+        Route::post('/blogs', [BlogController::class, 'store']);
+        Route::put('/blogs/{blog}', [BlogController::class, 'update']);
+        Route::delete('/blogs/{blog}', [BlogController::class, 'destroy']);
     });
 });
