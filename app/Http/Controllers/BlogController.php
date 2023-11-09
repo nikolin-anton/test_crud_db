@@ -9,46 +9,41 @@ use App\Models\Blog;
 
 class BlogController extends Controller
 {
-
     /**
-     * Display a listing of the resource.
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Psr\Container\NotFoundExceptionInterface
      */
-    public function index()
+    public function index(): \Illuminate\Http\Resources\Json\AnonymousResourceCollection
     {
         return BlogResource::collection(Blog::filter()
             ->paginate(request()->get('per_page', 12)));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(BlogStoreRequest $request)
+    public function store(BlogStoreRequest $request): BlogResource
     {
         return BlogResource::make(auth()->user()->blogs()->create($request->validated()));
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Blog $blog)
+    public function show(Blog $blog): BlogResource
     {
         return BlogResource::make($blog->loadMissing('user'));
     }
 
     /**
-     * Update the specified resource in storage.
+     * @throws \Illuminate\Auth\Access\AuthorizationException
      */
-    public function update(BlogUpdateRequest $request, Blog $blog)
+    public function update(BlogUpdateRequest $request, Blog $blog): BlogResource
     {
         $this->authorize('update', $blog);
         $blog->update($request->validated());
+
         return BlogResource::make($blog->refresh());
     }
 
     /**
-     * Remove the specified resource from storage.
+     * @throws \Illuminate\Auth\Access\AuthorizationException
      */
-    public function destroy(Blog $blog)
+    public function destroy(Blog $blog): \Illuminate\Http\JsonResponse
     {
         $this->authorize('delete', $blog);
         $blog->delete();

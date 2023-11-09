@@ -5,30 +5,23 @@ namespace App\Http\Controllers;
 use App\Http\Requests\UserUpdateRequest;
 use App\Http\Resources\UserResource;
 use App\Models\User;
-use Illuminate\Http\Request;
 
 class UserController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+    public function index(): \Illuminate\Http\Resources\Json\AnonymousResourceCollection
     {
         return UserResource::collection(User::filter()->get());
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(User $user)
+    public function show(User $user): UserResource
     {
         return UserResource::make($user->loadMissing('blogs'));
     }
 
     /**
-     * Update the specified resource in storage.
+     * @throws \Illuminate\Auth\Access\AuthorizationException
      */
-    public function update(UserUpdateRequest $request, User $user)
+    public function update(UserUpdateRequest $request, User $user): UserResource
     {
         $this->authorize('update', $user);
         $user->update($request->validated());
@@ -37,9 +30,9 @@ class UserController extends Controller
     }
 
     /**
-     * Remove the specified resource from storage.
+     * @throws \Illuminate\Auth\Access\AuthorizationException
      */
-    public function destroy(User $user)
+    public function destroy(User $user): \Illuminate\Http\JsonResponse
     {
         $this->authorize('delete', $user);
         $user->delete();

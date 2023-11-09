@@ -22,15 +22,12 @@ class Blog extends Model
         'is_published' => 'boolean',
     ];
 
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
     public function user(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
         return $this->belongsTo(User::class);
     }
 
-    public function scopeFilter(Builder $query)
+    public function scopeFilter(Builder $query): Builder|\Illuminate\Support\HigherOrderWhenProxy
     {
         return $query->when(request('search'), function ($query) {
             $query->where('title', 'LIKE', '%'.request('search').'%');

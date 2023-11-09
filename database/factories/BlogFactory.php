@@ -16,10 +16,11 @@ class BlogFactory extends Factory
      */
     public function definition(): array
     {
-        $is_published = rand(0,1);
+        $is_published = rand(0, 1);
+
         return [
-            'title' => $this->faker->sentence(rand(3,8),true),
-            'content' => $this->faker->realText(rand(1000,4000)),
+            'title' => $this->faker->sentence(rand(3, 8), true),
+            'content' => $this->faker->realText(rand(1000, 4000)),
             'is_published' => $is_published,
             'published_at' => $is_published === 1
                 ? $this->faker->dateTimeBetween('-1 week', '+1 week') : null,

@@ -35,7 +35,7 @@ class BlogStoreRequest extends FormRequest
     protected function prepareForValidation()
     {
         return $this->merge([
-            'published_at' => request('is_published') === true ? now() : null
+            'published_at' => request('is_published') === true ? now() : null,
         ]);
     }
 }

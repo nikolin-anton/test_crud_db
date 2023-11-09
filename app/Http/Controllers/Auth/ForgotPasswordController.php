@@ -10,16 +10,15 @@ use Illuminate\Support\Facades\Password;
 class ForgotPasswordController extends Controller
 {
     /**
-     * @param ForgotPasswordRequest $request
-     * @return \Illuminate\Http\JsonResponse
+     * @throws ErrorResponseException
      */
-    public function __invoke(ForgotPasswordRequest $request)
+    public function __invoke(ForgotPasswordRequest $request): \Illuminate\Http\JsonResponse
     {
         $status = Password::sendResetLink(
             $request->only('email')
         );
 
-        if($status === Password::RESET_LINK_SENT) {
+        if ($status === Password::RESET_LINK_SENT) {
             return response()->json(['message' => 'A letter has been sent to your mail'], 200);
         } else {
             throw new ErrorResponseException($status, 401);

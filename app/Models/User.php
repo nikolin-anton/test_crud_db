@@ -46,27 +46,20 @@ class User extends Authenticatable
         'password' => 'hashed',
     ];
 
-    /**
-     * @param $token
-     * @return void
-     */
     public function sendPasswordResetNotification($token): void
     {
         $email = request('email');
-        $url = config('app.url');// Should use config('app.url') or url('/')
+        $url = config('app.url'); // Should use config('app.url') or url('/')
         $url = "$url/reset-password?token=$token&email=$email";
         $this->notify(new ResetPasswordNotification($url));
     }
 
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
     public function blogs(): \Illuminate\Database\Eloquent\Relations\HasMany
     {
         return $this->hasMany(Blog::class);
     }
 
-    public function scopeFilter(Builder $query)
+    public function scopeFilter(Builder $query): Builder|\Illuminate\Support\HigherOrderWhenProxy
     {
         return $query->when(request('search'), function ($query) {
             $query->where('first_name', 'LIKE', '%'.request('search').'%')

@@ -6,24 +6,21 @@ use App\Exceptions\ErrorResponseException;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\RessetPasswordRequest;
 use Illuminate\Auth\Events\PasswordReset;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Password;
 
 class ResetPasswordController extends Controller
 {
     /**
-     * @param RessetPasswordRequest $request
-     * @return \Illuminate\Http\JsonResponse
      * @throws ErrorResponseException
      */
-    public function __invoke(RessetPasswordRequest $request)
+    public function __invoke(RessetPasswordRequest $request): \Illuminate\Http\JsonResponse
     {
         $status = Password::reset(
             $request->only('email', 'password', 'password_confirmation', 'token'),
             function ($user, $password) {
                 $user->forceFill([
-                    'password' => Hash::make($password)
+                    'password' => Hash::make($password),
                 ])->createToken('auth-token');
 
                 $user->save();
@@ -32,9 +29,9 @@ class ResetPasswordController extends Controller
             }
         );
 
-        if($status == Password::PASSWORD_RESET){
+        if ($status == Password::PASSWORD_RESET) {
             return response()->json('Password reset successfully', 200);
-        }else{
+        } else {
             throw new ErrorResponseException($status, 401);
         }
     }
