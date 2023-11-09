@@ -15,7 +15,8 @@ class BlogController extends Controller
      */
     public function index()
     {
-        return BlogResource::collection(Blog::get());
+        return BlogResource::collection(Blog::filter()
+            ->paginate(request()->get('per_page', 12)));
     }
 
     /**

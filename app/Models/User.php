@@ -4,6 +4,7 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use App\Notifications\ResetPasswordNotification;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -63,5 +64,17 @@ class User extends Authenticatable
     public function blogs(): \Illuminate\Database\Eloquent\Relations\HasMany
     {
         return $this->hasMany(Blog::class);
+    }
+
+    public function scopeFilter(Builder $query)
+    {
+        return $query->when(request('search'), function ($query) {
+            $query->where('first_name', 'LIKE', '%'.request('search').'%')
+                ->orWhere('last_name', 'LIKE', '%'.request('search').'%')
+                ->orWhere('email', 'LIKE', '%'.request('search').'%');
+        })
+            ->when(request('sort_by'), function ($query) {
+                $query->orderBy(request('sort_by'), request('order_by', 'asc'));
+            });
     }
 }
